@@ -3,11 +3,11 @@ defmodule Checksum do
     spreadsheet
     |> String.split("\n", trim: true)
     |> Enum.map(&convert_line_to_numbers/1)
-    |> Enum.map(&do_numbers/1)
+    |> Enum.map(&calc_diff_between_max_and_min/1)
     |> Enum.sum()
   end
 
-  defp do_numbers(numbers) do
+  defp calc_diff_between_max_and_min(numbers) do
     Enum.max(numbers) - Enum.min(numbers)
   end
 
