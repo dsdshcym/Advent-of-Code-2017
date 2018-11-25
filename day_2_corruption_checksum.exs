@@ -1,9 +1,13 @@
 defmodule Checksum do
   def call(spreadsheet) do
+    do_call(spreadsheet, &calc_diff_between_max_and_min/1)
+  end
+
+  defp do_call(spreadsheet, numbers_fun) do
     spreadsheet
     |> String.split("\n", trim: true)
     |> Enum.map(&convert_line_to_numbers/1)
-    |> Enum.map(&calc_diff_between_max_and_min/1)
+    |> Enum.map(numbers_fun)
     |> Enum.sum()
   end
 
