@@ -1,0 +1,3 @@
+[submodule "day_1_inverse_captcha"]
+	path = day_1_inverse_captcha
+	url = ./day_1_inverse_captcha/
