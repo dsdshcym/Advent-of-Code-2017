@@ -2,14 +2,17 @@ defmodule Checksum do
   def call(spreadsheet) do
     spreadsheet
     |> String.split("\n", trim: true)
-    |> Enum.map(&do_line/1)
+    |> Enum.map(&convert_line_to_numbers/1)
+    |> Enum.map(&do_numbers/1)
     |> Enum.sum()
   end
 
-  defp do_line(line) do
-    numbers = line |> String.split() |> Enum.map(&String.to_integer/1)
-
+  defp do_numbers(numbers) do
     Enum.max(numbers) - Enum.min(numbers)
+  end
+
+  defp convert_line_to_numbers(line) do
+    line |> String.split() |> Enum.map(&String.to_integer/1)
   end
 end
 
