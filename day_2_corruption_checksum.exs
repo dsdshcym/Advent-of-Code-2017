@@ -3,6 +3,10 @@ defmodule Checksum do
     do_call(spreadsheet, &calc_diff_between_max_and_min/1)
   end
 
+  def call(spreadsheet, :part_2) do
+    do_call(spreadsheet, &divide_evenly_divisible_values/1)
+  end
+
   defp do_call(spreadsheet, numbers_fun) do
     spreadsheet
     |> String.split("\n", trim: true)
@@ -13,6 +17,13 @@ defmodule Checksum do
 
   defp calc_diff_between_max_and_min(numbers) do
     Enum.max(numbers) - Enum.min(numbers)
+  end
+
+  defp divide_evenly_divisible_values(numbers) do
+    for a <- numbers, b <- numbers, a != b, Integer.mod(a, b) == 0 do
+      div(a, b)
+    end
+    |> Enum.at(0)
   end
 
   defp convert_line_to_numbers(line) do
@@ -80,6 +91,27 @@ defmodule ChecksumTest do
 
     test "puzzle input" do
       assert Checksum.call(@input, :part_1) == 36766
+    end
+  end
+
+  describe "part_2" do
+    test "four items" do
+      assert Checksum.call("5 9 2 8", :part_2) == 4
+    end
+
+    test "multiple lines" do
+      assert Checksum.call(
+               """
+               5 9 2 8
+               9 4 7 3
+               3 8 6 5
+               """,
+               :part_2
+             ) == 9
+    end
+
+    test "puzzle input" do
+      assert Checksum.call(@input, :part_2) == 261
     end
   end
 end
