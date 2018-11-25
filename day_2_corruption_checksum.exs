@@ -1,5 +1,5 @@
 defmodule Checksum do
-  def call(spreadsheet) do
+  def call(spreadsheet, :part_1) do
     do_call(spreadsheet, &calc_diff_between_max_and_min/1)
   end
 
@@ -44,36 +44,42 @@ defmodule ChecksumTest do
   1763	464	182	1932	1209	640	545	931	1979	197	1774	174	2074	1800	939	161
   """
 
-  describe "call/1" do
+  describe "part_1" do
     test "only one item" do
-      assert Checksum.call("1") == 0
+      assert Checksum.call("1", :part_1) == 0
     end
 
     test "two items" do
-      assert Checksum.call("2 3") == 1
+      assert Checksum.call("2 3", :part_1) == 1
     end
 
     test "multiple items" do
-      assert Checksum.call("5 1 9 5") == 8
+      assert Checksum.call("5 1 9 5", :part_1) == 8
     end
 
     test "multiple lines" do
-      assert Checksum.call("""
-             7 5 3
-             2 4 6 8
-             """) == 10
+      assert Checksum.call(
+               """
+               7 5 3
+               2 4 6 8
+               """,
+               :part_1
+             ) == 10
     end
 
     test "example" do
-      assert Checksum.call("""
-             5 1 9 5
-             7 5 3
-             2 4 6 8
-             """) == 18
+      assert Checksum.call(
+               """
+               5 1 9 5
+               7 5 3
+               2 4 6 8
+               """,
+               :part_1
+             ) == 18
     end
 
     test "puzzle input" do
-      assert Checksum.call(@input) == 36766
+      assert Checksum.call(@input, :part_1) == 36766
     end
   end
 end
