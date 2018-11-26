@@ -1,3 +1,17 @@
+defmodule Memory do
+  def empty_memory() do
+    Map.new()
+  end
+
+  def allocate(memory, point, count) do
+    Map.put(memory, point, count)
+  end
+
+  def allocated?(memory, current) do
+    Map.has_key?(memory, current)
+  end
+end
+
 defmodule SpiralMemory do
   def call(square) do
     square
@@ -6,7 +20,7 @@ defmodule SpiralMemory do
   end
 
   defp calc_point(square) do
-    traverse(1, square, {0, 0}, {0, -1}, empty_memory())
+    traverse(1, square, {0, 0}, {0, -1}, Memory.empty_memory())
   end
 
   defp traverse(count, square, current_point, _, _) when count >= square, do: current_point
@@ -15,10 +29,12 @@ defmodule SpiralMemory do
     forward = move(current, direction)
     left = move(current, turn_left(direction))
 
-    unless allocated?(memory, left) do
-      traverse(count + 1, square, left, turn_left(direction), allocate(memory, current, count))
+    new_memory = Memory.allocate(memory, current, count)
+
+    unless Memory.allocated?(memory, left) do
+      traverse(count + 1, square, left, turn_left(direction), new_memory)
     else
-      traverse(count + 1, square, forward, direction, allocate(memory, current, count))
+      traverse(count + 1, square, forward, direction, new_memory)
     end
   end
 
@@ -40,18 +56,6 @@ defmodule SpiralMemory do
 
   defp turn_left({0, -1}) do
     {1, 0}
-  end
-
-  defp empty_memory() do
-    Map.new()
-  end
-
-  defp allocate(memory, point, count) do
-    Map.put(memory, point, count)
-  end
-
-  defp allocated?(memory, current) do
-    Map.has_key?(memory, current)
   end
 
   defp manhattan_distance({x, y}) do
