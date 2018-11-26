@@ -3,8 +3,8 @@ defmodule Memory do
     Map.new()
   end
 
-  def allocate(memory, point, count) do
-    Map.put(memory, point, count)
+  def allocate(memory, point, value) do
+    Map.put(memory, point, value)
   end
 
   def allocated?(memory, current) do
@@ -23,18 +23,18 @@ defmodule SpiralMemory do
     traverse(1, square, {0, 0}, {0, -1}, Memory.new())
   end
 
-  defp traverse(count, square, current_point, _, _) when count >= square, do: current_point
+  defp traverse(value, square, current_point, _, _) when value >= square, do: current_point
 
-  defp traverse(count, square, current, direction, memory) do
+  defp traverse(value, square, current, direction, memory) do
     forward = move(current, direction)
     left = move(current, turn_left(direction))
 
-    new_memory = Memory.allocate(memory, current, count)
+    new_memory = Memory.allocate(memory, current, value)
 
     unless Memory.allocated?(memory, left) do
-      traverse(count + 1, square, left, turn_left(direction), new_memory)
+      traverse(value + 1, square, left, turn_left(direction), new_memory)
     else
-      traverse(count + 1, square, forward, direction, new_memory)
+      traverse(value + 1, square, forward, direction, new_memory)
     end
   end
 
