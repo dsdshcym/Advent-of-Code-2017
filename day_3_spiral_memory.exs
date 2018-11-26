@@ -13,19 +13,19 @@ defmodule Memory do
 end
 
 defmodule SpiralMemory do
-  def call(square) do
-    square
+  def call(input) do
+    input
     |> calc_point()
   end
 
-  defp calc_point(square) do
-    traverse(1, square, {0, 0}, {0, -1}, Memory.new())
+  defp calc_point(input) do
+    traverse(1, input, {0, 0}, {0, -1}, Memory.new())
   end
 
-  defp traverse(value, square, current_point, _, _) when value >= square,
-    do: current_point |> manhattan_distance()
+  defp traverse(value, input, current_point, _, _) when value >= input,
+    do: value
 
-  defp traverse(value, square, current, direction, memory) do
+  defp traverse(value, input, current, direction, memory) do
     forward = move(current, direction)
     left = move(current, turn_left(direction))
 
@@ -33,9 +33,9 @@ defmodule SpiralMemory do
     new_value = value + 1
 
     unless Memory.allocated?(memory, left) do
-      traverse(new_value, square, left, turn_left(direction), new_memory)
+      traverse(new_value, input, left, turn_left(direction), new_memory)
     else
-      traverse(new_value, square, forward, direction, new_memory)
+      traverse(new_value, input, forward, direction, new_memory)
     end
   end
 
@@ -69,25 +69,29 @@ ExUnit.start()
 defmodule SpiralMemoryTest do
   use ExUnit.Case
 
-  describe "part 1" do
-    test "returns 0 for 1" do
-      assert SpiralMemory.call(1) == 0
+  describe "part 2" do
+    test "returns 1 for 1" do
+      assert SpiralMemory.call(1) == 1
     end
 
-    test "returns 1 for 2" do
-      assert SpiralMemory.call(2) == 1
+    test "returns 2 for 2" do
+      assert SpiralMemory.call(2) == 2
     end
 
-    test "returns 1 for 4" do
-      assert SpiralMemory.call(4) == 1
+    test "returns 4 for 4" do
+      assert SpiralMemory.call(4) == 4
     end
 
-    test "returns 2 for 23" do
+    test "returns 23 for 23" do
       assert SpiralMemory.call(23) == 2
     end
 
-    test "returns 31 for 1024" do
-      assert SpiralMemory.call(1024) == 31
+    test "returns 25 for 24" do
+      assert SpiralMemory.call(24) == 25
+    end
+
+    test "returns 806 for 800" do
+      assert SpiralMemory.call(800) == 806
     end
 
     test "returns " do
