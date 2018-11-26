@@ -16,14 +16,14 @@ defmodule SpiralMemory do
   def call(square) do
     square
     |> calc_point()
-    |> manhattan_distance()
   end
 
   defp calc_point(square) do
     traverse(1, square, {0, 0}, {0, -1}, Memory.new())
   end
 
-  defp traverse(value, square, current_point, _, _) when value >= square, do: current_point
+  defp traverse(value, square, current_point, _, _) when value >= square,
+    do: current_point |> manhattan_distance()
 
   defp traverse(value, square, current, direction, memory) do
     forward = move(current, direction)
