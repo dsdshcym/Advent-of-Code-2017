@@ -30,11 +30,12 @@ defmodule SpiralMemory do
     left = move(current, turn_left(direction))
 
     new_memory = Memory.allocate(memory, current, value)
+    new_value = value + 1
 
     unless Memory.allocated?(memory, left) do
-      traverse(value + 1, square, left, turn_left(direction), new_memory)
+      traverse(new_value, square, left, turn_left(direction), new_memory)
     else
-      traverse(value + 1, square, forward, direction, new_memory)
+      traverse(new_value, square, forward, direction, new_memory)
     end
   end
 
