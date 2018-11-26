@@ -9,7 +9,7 @@ defmodule Passphrases do
   defp valid?(input) do
     input
     |> String.split()
-    |> Enum.group_by(fn x -> x end)
+    |> Enum.group_by(fn x -> x |> String.to_charlist() |> Enum.sort() end)
     |> Map.values()
     |> Enum.all?(fn words -> length(words) == 1 end)
   end
