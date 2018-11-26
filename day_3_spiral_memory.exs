@@ -1,5 +1,5 @@
 defmodule Memory do
-  def empty_memory() do
+  def new() do
     Map.new()
   end
 
@@ -20,7 +20,7 @@ defmodule SpiralMemory do
   end
 
   defp calc_point(square) do
-    traverse(1, square, {0, 0}, {0, -1}, Memory.empty_memory())
+    traverse(1, square, {0, 0}, {0, -1}, Memory.new())
   end
 
   defp traverse(count, square, current_point, _, _) when count >= square, do: current_point
