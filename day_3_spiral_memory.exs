@@ -16,9 +16,9 @@ defmodule SpiralMemory do
     left = move(current, turn_left(direction))
 
     unless allocated?(memory, left) do
-      traverse(count + 1, square, left, turn_left(direction), allocate(memory, current))
+      traverse(count + 1, square, left, turn_left(direction), allocate(memory, current, count))
     else
-      traverse(count + 1, square, forward, direction, allocate(memory, current))
+      traverse(count + 1, square, forward, direction, allocate(memory, current, count))
     end
   end
 
@@ -43,15 +43,15 @@ defmodule SpiralMemory do
   end
 
   defp empty_memory() do
-    MapSet.new()
+    Map.new()
   end
 
-  defp allocate(memory, point) do
-    MapSet.put(memory, point)
+  defp allocate(memory, point, count) do
+    Map.put(memory, point, count)
   end
 
   defp allocated?(memory, current) do
-    MapSet.member?(memory, current)
+    Map.has_key?(memory, current)
   end
 
   defp manhattan_distance({x, y}) do
