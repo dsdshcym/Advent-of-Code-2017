@@ -9,7 +9,7 @@ defmodule SpiralMemory do
     traverse(1, square, {0, 0}, {0, -1}, empty_memory())
   end
 
-  defp traverse(count, count, current_point, _, _), do: current_point
+  defp traverse(count, square, current_point, _, _) when count >= square, do: current_point
 
   defp traverse(count, square, current, direction, memory) do
     forward = move(current, direction)
