@@ -14,7 +14,13 @@ defmodule Maze do
 
   defp simulate(maze, index, steps) do
     new_index = index + Enum.at(maze, index)
-    new_maze = List.update_at(maze, index, &(&1 + 1))
+
+    new_maze =
+      List.update_at(maze, index, fn
+        offset when offset >= 3 -> offset - 1
+        offset -> offset + 1
+      end)
+
     new_steps = steps + 1
 
     simulate(new_maze, new_index, new_steps)
@@ -1087,34 +1093,7 @@ defmodule MazeTest do
   -520
   """
 
-  describe "part 1" do
-    test "exits if there is no maze" do
-      assert Maze.steps_to_exit("") == 0
-    end
-
-    test "exits after 1 jump forward" do
-      assert Maze.steps_to_exit("1") == 1
-    end
-
-    test "exit after 1 jump backward" do
-      assert Maze.steps_to_exit("-1") == 1
-    end
-
-    test "exits after 2 jump" do
-      assert Maze.steps_to_exit("""
-             1
-             1
-             """) == 2
-    end
-
-    test "exits after jumping backward" do
-      assert Maze.steps_to_exit("""
-             2
-             3
-             -1
-             """) == 3
-    end
-
+  describe "part 2" do
     test "example" do
       assert Maze.steps_to_exit("""
              0
@@ -1122,11 +1101,13 @@ defmodule MazeTest do
              0
              1
              -3
-             """) == 5
+             """) == 10
     end
 
+    # takes 539.2s to run, seriously?
+    @tag timeout: :infinity
     test "puzzle input" do
-      assert Maze.steps_to_exit(@input) == 356_945
+      assert Maze.steps_to_exit(@input) == 28_372_145
     end
   end
 end
