@@ -23,13 +23,11 @@ defmodule Maze do
   end
 
   def steps_to_exit(input) do
-    maze =
-      input
-      |> String.split("\n", trim: true)
-      |> Enum.map(&String.to_integer/1)
-      |> Maze.new()
-
-    simulate(maze, 0, 0)
+    input
+    |> String.split("\n", trim: true)
+    |> Enum.map(&String.to_integer/1)
+    |> Maze.new()
+    |> simulate(0, 0)
   end
 
   defp simulate(_maze, index, steps) when index < 0, do: steps
