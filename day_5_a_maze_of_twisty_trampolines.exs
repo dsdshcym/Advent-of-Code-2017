@@ -1,25 +1,43 @@
 defmodule Maze do
+  def new(list) do
+    list
+  end
+
+  def at(maze, index) do
+    Enum.at(maze, index)
+  end
+
+  def refresh_at(maze, index) do
+    List.update_at(maze, index, fn
+      offset when offset >= 3 -> offset - 1
+      offset -> offset + 1
+    end)
+  end
+
+  defmacro maze_size(maze) do
+    quote do
+      length(unquote(maze))
+    end
+  end
+
   def steps_to_exit(input) do
     maze =
       input
       |> String.split("\n", trim: true)
       |> Enum.map(&String.to_integer/1)
+      |> Maze.new()
 
     simulate(maze, 0, 0)
   end
 
   defp simulate(_maze, index, steps) when index < 0, do: steps
 
-  defp simulate(maze, index, steps) when index >= length(maze), do: steps
+  defp simulate(maze, index, steps) when index >= maze_size(maze), do: steps
 
   defp simulate(maze, index, steps) do
-    new_index = index + Enum.at(maze, index)
+    new_index = index + Maze.at(maze, index)
 
-    new_maze =
-      List.update_at(maze, index, fn
-        offset when offset >= 3 -> offset - 1
-        offset -> offset + 1
-      end)
+    new_maze = Maze.refresh_at(maze, index)
 
     new_steps = steps + 1
 
