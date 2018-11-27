@@ -6,11 +6,11 @@ defmodule Memory do
     |> reallocate_until_repeat()
   end
 
-  defp reallocate_until_repeat(configuration, seen_configurations \\ MapSet.new(), step \\ 0) do
-    if MapSet.member?(seen_configurations, configuration) do
-      step
+  defp reallocate_until_repeat(configuration, seen_configurations \\ Map.new(), step \\ 0) do
+    if Map.has_key?(seen_configurations, configuration) do
+      step - Map.get(seen_configurations, configuration)
     else
-      new_seen_configurations = MapSet.put(seen_configurations, configuration)
+      new_seen_configurations = Map.put(seen_configurations, configuration, step)
       new_configuration = reallocate(configuration)
       new_step = step + 1
       reallocate_until_repeat(new_configuration, new_seen_configurations, new_step)
@@ -58,15 +58,15 @@ defmodule MemoryTest do
     end
 
     test "2 0 0 " do
-      assert Memory.call("2 0 0") == 6
+      assert Memory.call("2 0 0") == 5
     end
 
     test "example" do
-      assert Memory.call("0 2 7 0") == 5
+      assert Memory.call("0 2 7 0") == 4
     end
 
     test "puzzle input" do
-      assert Memory.call(@input) == 11137
+      assert Memory.call(@input) == 1037
     end
   end
 end
