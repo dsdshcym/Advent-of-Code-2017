@@ -1,14 +1,16 @@
 defmodule Maze do
   def new(list) do
     list
+    |> Enum.with_index()
+    |> Map.new(fn {offset, index} -> {index, offset} end)
   end
 
   def at(maze, index) do
-    Enum.at(maze, index)
+    Map.get(maze, index)
   end
 
   def refresh_at(maze, index) do
-    List.update_at(maze, index, fn
+    Map.update!(maze, index, fn
       offset when offset >= 3 -> offset - 1
       offset -> offset + 1
     end)
@@ -16,7 +18,7 @@ defmodule Maze do
 
   defmacro maze_size(maze) do
     quote do
-      length(unquote(maze))
+      map_size(unquote(maze))
     end
   end
 
@@ -1122,7 +1124,7 @@ defmodule MazeTest do
              """) == 10
     end
 
-    # takes 539.2s to run, seriously?
+    # takes 10.9s to run, seriously?
     @tag timeout: :infinity
     test "puzzle input" do
       assert Maze.steps_to_exit(@input) == 28_372_145
