@@ -1,3 +1,7 @@
+# TODO: extract separate module to handle Register operations like init, update
+# TODO: parse value_str and comp_value_str as early as possible
+# TODO: extract Comparor, Executor
+
 defmodule Registers do
   def largest(input) do
     input
