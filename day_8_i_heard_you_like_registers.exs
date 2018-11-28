@@ -6,6 +6,18 @@ defmodule Registers do
     |> largest_value()
   end
 
+  def largest_ever(input) do
+    input
+    |> String.split("\n", trim: true)
+    |> Enum.reduce({%{}, 0}, fn line, {registers, largest} ->
+      new_registers = run(line, registers)
+      current_largest = largest_value(new_registers)
+      new_largest = if current_largest > largest, do: current_largest, else: largest
+      {new_registers, new_largest}
+    end)
+    |> elem(1)
+  end
+
   defp largest_value(registers) do
     registers
     |> Map.values()
@@ -1144,6 +1156,30 @@ defmodule RegistersTest do
 
     test "puzzle input" do
       assert Registers.largest(@input) == 3089
+    end
+  end
+
+  describe "largest ever" do
+    test "once" do
+      assert Registers.largest_ever("a inc 1 if a == 0") == 1
+    end
+
+    test "incremental" do
+      assert Registers.largest_ever("""
+             a inc 1 if a == 0
+             a inc 2 if a > 0
+             """) == 3
+    end
+
+    test "decreases" do
+      assert Registers.largest_ever("""
+             a inc 1 if a == 0
+             a dec 2 if a > 0
+             """) == 1
+    end
+
+    test "puzzle input" do
+      assert Registers.largest_ever(@input) == 5391
     end
   end
 end
