@@ -1,4 +1,94 @@
 defmodule Tower do
+  def find_wrong_weight(input) do
+    bottom = find_bottom(input)
+
+    node_info_by_names =
+      input
+      |> String.split("\n", trim: true)
+      |> Enum.map(fn line ->
+        line
+        |> String.split([" ", ","], trim: true)
+        |> (fn
+              [node, weight_str] ->
+                {node, %{weight: extract_weight(weight_str), descendants: []}}
+
+              [node, weight_str, "->" | descendants] ->
+                {node, %{weight: extract_weight(weight_str), descendants: descendants}}
+            end).()
+      end)
+      |> Map.new()
+
+    tree = build_tree(bottom, node_info_by_names)
+
+    find_wrong_node(tree)
+  end
+
+  defp extract_weight(weight_with_parens) do
+    weight_with_parens
+    |> String.slice(1..-2)
+    |> String.to_integer()
+  end
+
+  defp build_tree(root, node_info_by_names) do
+    %{
+      name: root,
+      weight: node_info_by_names[root][:weight],
+      children:
+        node_info_by_names[root][:descendants] |> Enum.map(&build_tree(&1, node_info_by_names))
+    }
+  end
+
+  defp find_wrong_node(tree) do
+    if wrong_child = find_wrong_child(tree) do
+      wrong_node = find_wrong_node(wrong_child)
+
+      if is_map(wrong_node) && Map.equal?(wrong_child, wrong_node) do
+        hd(Enum.map(tree.children, &total_weight/1) -- [total_weight(wrong_child)]) -
+          total_weight(wrong_child) + wrong_child.weight
+      else
+        wrong_node
+      end
+    else
+      tree
+    end
+  end
+
+  defp find_wrong_child(tree) do
+    children_weights = tree.children |> Enum.map(&total_weight/1)
+
+    if index = find_index_of_special(children_weights) do
+      Enum.at(tree.children, index)
+    else
+      nil
+    end
+  end
+
+  defp find_index_of_special(list) do
+    find_index_of_special(list, 0)
+  end
+
+  defp find_index_of_special([], _index), do: nil
+
+  defp find_index_of_special([a, b, b | _tail], index) when a != b do
+    index
+  end
+
+  defp find_index_of_special([b, a, b | _tail], index) when a != b do
+    index + 1
+  end
+
+  defp find_index_of_special([b, b, a | _tail], index) when a != b do
+    index + 2
+  end
+
+  defp find_index_of_special([a, a, a | tail], index) do
+    find_index_of_special(tail, index + 3)
+  end
+
+  defp total_weight(tree) do
+    tree.weight + (tree.children |> Enum.map(&total_weight/1) |> Enum.sum())
+  end
+
   def find_bottom(input) do
     input
     |> String.split("\n", trim: true)
@@ -1156,6 +1246,39 @@ defmodule TowerTest do
 
     test "puzzle input" do
       assert Tower.find_bottom(@input) == "azqje"
+    end
+  end
+
+  describe "find_wrong_weight/1" do
+    test "returns the only one differs from others" do
+      assert Tower.find_wrong_weight("""
+             a (11) -> b, c, d
+             b (1)
+             c (2)
+             d (1)
+             """) == 1
+    end
+
+    test "example" do
+      assert Tower.find_wrong_weight("""
+             pbga (66)
+             xhth (57)
+             ebii (61)
+             havc (66)
+             ktlj (57)
+             fwft (72) -> ktlj, cntj, xhth
+             qoyq (66)
+             padx (45) -> pbga, havc, qoyq
+             tknk (41) -> ugml, padx, fwft
+             jptl (61)
+             ugml (68) -> gyxo, ebii, jptl
+             gyxo (61)
+             cntj (57)
+             """) == 60
+    end
+
+    test "puzzle input" do
+      assert Tower.find_wrong_weight(@input) == 646
     end
   end
 end
