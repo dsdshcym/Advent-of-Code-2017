@@ -3,6 +3,11 @@ defmodule Registers do
     input
     |> String.split("\n", trim: true)
     |> Enum.reduce(%{}, fn line, registers -> run(line, registers) end)
+    |> largest_value()
+  end
+
+  defp largest_value(registers) do
+    registers
     |> Map.values()
     |> Enum.max()
   end
